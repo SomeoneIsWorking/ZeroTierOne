@@ -26,7 +26,7 @@ namespace {
 
 const __m128i s_sseSwapBytes = _mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 __attribute__((__target__("ssse3,sse4,sse4.1,sse4.2,pclmul")))
 #endif
 __m128i p_gmacPCLMUL128(const __m128i h, __m128i y) noexcept
@@ -59,7 +59,7 @@ __m128i p_gmacPCLMUL128(const __m128i h, __m128i y) noexcept
 
 #define ZT_AES_VAES512 1
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 __attribute__((__target__("sse4,aes,avx,avx2,vaes,avx512f,avx512bw")))
 #endif
 void p_aesCtrInnerVAES512(unsigned int &len, const uint64_t c0, uint64_t &c1, const uint8_t *&in, uint8_t *&out, const __m128i *const k) noexcept
@@ -111,7 +111,7 @@ void p_aesCtrInnerVAES512(unsigned int &len, const uint64_t c0, uint64_t &c1, co
 
 #define ZT_AES_VAES256 1
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 __attribute__((__target__("sse4,aes,avx,avx2,vaes")))
 #endif
 void p_aesCtrInnerVAES256(unsigned int &len, const uint64_t c0, uint64_t &c1, const uint8_t *&in, uint8_t *&out, const __m128i *const k) noexcept
@@ -181,7 +181,7 @@ void p_aesCtrInnerVAES256(unsigned int &len, const uint64_t c0, uint64_t &c1, co
 
 #endif // does compiler support AVX2 and AVX512 AES intrinsics?
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 __attribute__((__target__("ssse3,sse4,sse4.1,sse4.2,aes,pclmul")))
 #endif
 __m128i p_init256_1_aesni(__m128i a, __m128i b) noexcept
@@ -198,7 +198,7 @@ __m128i p_init256_1_aesni(__m128i a, __m128i b) noexcept
 	return x;
 }
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 __attribute__((__target__("ssse3,sse4,sse4.1,sse4.2,aes,pclmul")))
 #endif
 __m128i p_init256_2_aesni(__m128i a, __m128i b) noexcept
@@ -218,7 +218,7 @@ __m128i p_init256_2_aesni(__m128i a, __m128i b) noexcept
 
 } // anonymous namespace
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 __attribute__((__target__("ssse3,sse4,sse4.1,sse4.2,pclmul")))
 #endif
 void AES::GMAC::p_aesNIUpdate(const uint8_t *in, unsigned int len) noexcept
@@ -288,7 +288,7 @@ void AES::GMAC::p_aesNIUpdate(const uint8_t *in, unsigned int len) noexcept
 	_rp = len; // len is always less than 16 here
 }
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 __attribute__((__target__("ssse3,sse4,sse4.1,sse4.2,pclmul,aes")))
 #endif
 void AES::GMAC::p_aesNIFinish(uint8_t tag[16]) noexcept
@@ -362,7 +362,7 @@ void AES::GMAC::p_aesNIFinish(uint8_t tag[16]) noexcept
 	_mm_storeu_si128(reinterpret_cast<__m128i *>(tag), _mm_xor_si128(_mm_shuffle_epi8(t4, s_sseSwapBytes), encIV));
 }
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 __attribute__((__target__("ssse3,sse4,sse4.1,sse4.2,aes")))
 #endif
 void AES::CTR::p_aesNICrypt(const uint8_t *in, uint8_t *out, unsigned int len) noexcept
@@ -562,7 +562,7 @@ void AES::CTR::p_aesNICrypt(const uint8_t *in, uint8_t *out, unsigned int len) n
 	_ctr[1] = Utils::hton(c1);
 }
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 __attribute__((__target__("ssse3,sse4,sse4.1,sse4.2,aes,pclmul")))
 #endif
 void AES::p_init_aesni(const uint8_t *key) noexcept
@@ -626,7 +626,7 @@ void AES::p_init_aesni(const uint8_t *key) noexcept
 	p_k.ni.h2[3] = _mm_xor_si128(_mm_shuffle_epi32(hhhh, 78), hhhh);
 }
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 __attribute__((__target__("ssse3,sse4,sse4.1,sse4.2,aes,pclmul")))
 #endif
 void AES::p_encrypt_aesni(const void *const in, void *const out) const noexcept
@@ -649,7 +649,7 @@ void AES::p_encrypt_aesni(const void *const in, void *const out) const noexcept
 	_mm_storeu_si128((__m128i *)out, _mm_aesenclast_si128(tmp, p_k.ni.k[14]));
 }
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 __attribute__((__target__("ssse3,sse4,sse4.1,sse4.2,aes,pclmul")))
 #endif
 void AES::p_decrypt_aesni(const void *in, void *out) const noexcept
