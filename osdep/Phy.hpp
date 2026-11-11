@@ -21,6 +21,8 @@
 #include <list>
 #include <stdexcept>
 
+#include "../node/Metrics.hpp"
+
 #if defined(_WIN32) || defined(_WIN64)
 
 #include <winsock2.h>
@@ -49,8 +51,6 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
-
-#include "../node/Metrics.hpp"
 
 #if defined(__linux__) || defined(linux) || defined(__LINUX__) || defined(__linux)
 #ifndef IPV6_DONTFRAG
